@@ -423,7 +423,7 @@ public class Hashtable<K,V>
         Entry<?,?> tab[] = table;
         if (count >= threshold) {
             // Rehash the table if the threshold is exceeded
-            rehash();
+            rehash(); // 当前元素数量大于临界值，先扩容
 
             tab = table;
             hash = key.hashCode();
@@ -463,17 +463,17 @@ public class Hashtable<K,V>
         // Makes sure the key is not already in the hashtable.
         Entry<?,?> tab[] = table;
         int hash = key.hashCode();
-        int index = (hash & 0x7FFFFFFF) % tab.length;
+        int index = (hash & 0x7FFFFFFF) % tab.length; // 找到桶的下标位置
         @SuppressWarnings("unchecked")
-        Entry<K,V> entry = (Entry<K,V>)tab[index];
-        for(; entry != null ; entry = entry.next) {
-            if ((entry.hash == hash) && entry.key.equals(key)) {
+        Entry<K,V> entry = (Entry<K,V>)tab[index]; // 桶的头结点
+        for(; entry != null ; entry = entry.next) { // 遍历链表，查找当前元素
+            if ((entry.hash == hash) && entry.key.equals(key)) { // 如果已经存在相同的key
                 V old = entry.value;
-                entry.value = value;
+                entry.value = value; // 覆盖value
                 return old;
             }
         }
-
+        // key不重复，追加到链表上
         addEntry(hash, key, value, index);
         return null;
     }
